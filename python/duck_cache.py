@@ -21,16 +21,33 @@ def get_db_conn():
     conn = duckdb.connect(database=":memory:", read_only=False)
     return conn
 
+'''
+rel = conn.from_df(df)
+rel.alias
+rel.columns
+rel.types
+show_tables(conn)
+rel.create('temp_table')
+show_tables(conn)
+conn.execute('select * from temp_table')
+conn.execute('select * from temp_table').fetchdf()
+conn.execute('select * from temp_table').df()
+'''
+
 
 def save_df(conn, df):
     "save dataframe to a duckdb"
+    breakpoint()
     conn.register("temp_df", df)
     conn.execute("create table table_df as select * from temp_df")
     conn.unregister("temp_df")
 
 
 def show_tables(conn):
-    return conn.execute("PRAGMA show_tables").fetchall()
+    tables = []
+    for table_tuple in conn.execute("PRAGMA show_tables").fetchall():
+        tables.append(table_tuple[0])
+    return tables
 
 
 def main() -> None:
